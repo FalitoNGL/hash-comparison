@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # === KONFIGURASI ===
-INPUT_CSV = "hasil_god_mode.csv"
+INPUT_CSV = "hasil_benchmark.csv"
 OUTPUT_DIR = "grafik_output"
 DPI = 300
 

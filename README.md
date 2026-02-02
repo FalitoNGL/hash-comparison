@@ -14,40 +14,45 @@ Repositori ini berisi *suite* pengujian ilmiah untuk membandingkan performa dan 
 * **Resource Monitoring:** Memantau penggunaan CPU (%) dan Memori (MB) secara real-time.
 
 ## 📂 Struktur Folder
-* `main.py`: Demo dasar hashing (SHA-256, SHA-3, BLAKE2).
-* `benchmark.py`: Engine utama benchmarking.
-* `visualize.py`: Generator grafik HD (Bar Chart dengan Error Bars).
-* `generate_dummy.py`: Script pembuat data uji (1MB - 1GB).
-* `dataset/`: Folder penyimpanan file dummy (tidak di-upload ke GitHub).
-* `grafik_output/`: Folder output grafik hasil visualisasi.
+| File | Deskripsi |
+|------|-----------|
+| `main.py` | Demo dasar hashing |
+| `benchmark.py` | Engine utama benchmarking |
+| `visualize.py` | Generator grafik HD |
+| `generate_dummy.py` | Pembuat data uji (1MB - 1GB) |
+| `dataset/` | Folder file dummy (tidak di-upload) |
+| `grafik_output/` | Folder output grafik |
 
 ## 🚀 Cara Menjalankan
-1.  **Install Library:**
-    ```bash
-    pip install psutil tqdm scipy matplotlib seaborn pandas
-    ```
 
-2.  **Generate Data:**
-    ```bash
-    python generate_dummy.py
-    ```
+### 1. Install Dependencies
+```bash
+pip install psutil tqdm scipy matplotlib seaborn pandas
+```
 
-3.  **Jalankan Benchmark:**
-    ```bash
-    python benchmark.py
-    ```
-    *Output: File `hasil_god_mode.csv` dan `specs_info.txt` akan muncul.*
+### 2. Generate Data Uji
+```bash
+python generate_dummy.py
+```
 
-4.  **Buat Grafik:**
-    ```bash
-    python visualize.py
-    ```
-    *Output: Cek folder `grafik_output/`.*
+### 3. Jalankan Benchmark
+```bash
+python benchmark.py
+```
+Output: `hasil_benchmark.csv` dan `specs_info.txt`
+
+### 4. Buat Visualisasi
+```bash
+python visualize.py
+```
+Output: Folder `grafik_output/`
 
 ## 📊 Algoritma yang Diuji
-1.  **SHA-256:** Standar industri saat ini (Baseline).
-2.  **SHA-3 (Keccak):** Standar terbaru NIST (FIPS 202).
-3.  **BLAKE2b:** Algoritma *high-speed* modern (RFC 7693).
+| Algoritma | Standar | Keterangan |
+|-----------|---------|------------|
+| SHA-256 | FIPS 180-4 | Baseline industri |
+| SHA-3 (Keccak) | FIPS 202 | Standar terbaru NIST |
+| BLAKE2b | RFC 7693 | High-speed modern |
 
 ---
 **Kelompok 3 - II RKS A**

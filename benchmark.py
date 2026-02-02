@@ -26,7 +26,7 @@ ALGORITHMS = {
 }
 
 DATASET_DIR = "dataset"
-OUTPUT_CSV = "hasil_god_mode.csv"
+OUTPUT_CSV = "hasil_benchmark.csv"
 SPECS_FILE = "specs_info.txt"
 WARMUP_ITERATIONS = 2
 BENCHMARK_ITERATIONS = 30
