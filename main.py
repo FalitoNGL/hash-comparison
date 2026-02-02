@@ -1,7 +1,6 @@
 import hashlib
 import os
 
-# Mapping algoritma ke fungsi hashlib
 ALGORITHMS = {
     'SHA-256': hashlib.sha256,
     'SHA3-256': hashlib.sha3_256,
@@ -9,7 +8,6 @@ ALGORITHMS = {
 }
 
 def compute_hash(filepath, algorithm):
-    """Hitung hash file secara chunk-based."""
     if algorithm not in ALGORITHMS:
         raise ValueError(f"Algoritma '{algorithm}' tidak didukung.")
     
@@ -21,14 +19,11 @@ def compute_hash(filepath, algorithm):
 
 
 if __name__ == "__main__":
-    # Buat file dummy
     dummy_file = "test_hash.txt"
     with open(dummy_file, 'w') as f:
         f.write("Implementasi Algoritma Hash SHA-256 vs SHA-3 vs BLAKE2")
     
-    # Hitung dan print hash untuk setiap algoritma
     print("=== Hash Comparison ===\n")
     for algo in ALGORITHMS:
         result = compute_hash(dummy_file, algo)
         print(f"{algo.upper():10} : {result}")
-    

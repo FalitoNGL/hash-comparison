@@ -2,7 +2,6 @@ import os
 
 DATASET_DIR = "dataset"
 
-# Ukuran file: 1MB, 10MB, 100MB, 1GB
 FILE_SIZES = [
     (1, "1MB"),
     (10, "10MB"),
@@ -12,7 +11,6 @@ FILE_SIZES = [
 
 
 def create_dummy_files():
-    """Buat file dummy dengan ukuran bervariasi."""
     if not os.path.exists(DATASET_DIR):
         os.makedirs(DATASET_DIR)
 
@@ -28,8 +26,7 @@ def create_dummy_files():
 
         print(f"  [{label}] Membuat file {size_mb} MB...", end=" ", flush=True)
 
-        # Tulis file per chunk 1MB
-        chunk = os.urandom(1024 * 1024)  # 1MB random data
+        chunk = os.urandom(1024 * 1024)
         with open(filepath, 'wb') as f:
             for _ in range(size_mb):
                 f.write(chunk)

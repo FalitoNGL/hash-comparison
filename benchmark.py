@@ -1,8 +1,3 @@
-"""
-Benchmark: SHA-256 vs SHA-3 vs BLAKE2
-Tugas Akhir Kriptografi Terapan
-"""
-
 import hashlib
 import time
 import tracemalloc
@@ -13,11 +8,9 @@ import re
 import threading
 from statistics import mean, stdev
 
-# External libraries
 import psutil
 from tqdm import tqdm
 
-# === KONFIGURASI ===
 ALGORITHMS = {
     'SHA-256': hashlib.sha256,
     'SHA3-256': hashlib.sha3_256,
@@ -32,9 +25,7 @@ BENCHMARK_ITERATIONS = 30
 CHUNK_SIZE = 8192
 
 
-# === 1. SYSTEM INFO ===
 def get_system_info():
-    """Ambil informasi sistem lengkap."""
     info = {
         'OS': f"{platform.system()} {platform.release()} (Build {platform.version()})",
         'Processor': platform.processor() or "Unknown",
@@ -48,7 +39,6 @@ def get_system_info():
         'RAM Usage': f"{psutil.virtual_memory().percent:.1f}%",
     }
     
-    # CPU name via WMIC (Windows)
     try:
         import subprocess
         result = subprocess.run(['wmic', 'cpu', 'get', 'name'], 
@@ -63,7 +53,6 @@ def get_system_info():
 
 
 def print_and_save_specs():
-    """Print dan simpan spesifikasi sistem."""
     info = get_system_info()
     
     print("\n" + "=" * 70)
@@ -84,9 +73,7 @@ def print_and_save_specs():
     return info
 
 
-# === 2. HASH FUNCTION ===
 def compute_hash(filepath, algorithm):
-    """Hitung hash file secara chunk-based."""
     hasher = ALGORITHMS[algorithm]()
     with open(filepath, 'rb') as f:
         for chunk in iter(lambda: f.read(CHUNK_SIZE), b''):
@@ -95,29 +82,20 @@ def compute_hash(filepath, algorithm):
 
 
 def compute_hash_bytes(data, algorithm):
-    """Hitung hash dari bytes."""
     hasher = ALGORITHMS[algorithm]()
     hasher.update(data)
     return hasher.hexdigest()
 
 
-# === 3. BENCHMARK FUNCTION ===
 def run_benchmark(filepath, algorithm, show_details=False, file_label=""):
-    """
-    Jalankan benchmark dengan standar scientific:
-    - Warm-up: 2 iterasi (dibuang)
-    - Iterasi: 30x dengan timing nanoseconds
-    """
     file_size = os.path.getsize(filepath)
     times_ns = []
     memories = []
     cpu_readings = []
     
-    # Warm-up (2 iterasi, tidak dicatat)
     for _ in range(WARMUP_ITERATIONS):
         _ = compute_hash(filepath, algorithm)
     
-    # Benchmark iterations
     iteration_results = []
     for i in range(BENCHMARK_ITERATIONS):
         tracemalloc.start()
@@ -135,7 +113,6 @@ def run_benchmark(filepath, algorithm, show_details=False, file_label=""):
         memories.append(peak_mem / (1024 * 1024))
         cpu_readings.append((cpu_before + cpu_after) / 2)
         
-        # Store individual iteration result
         iteration_results.append({
             'iteration': i + 1,
             'time_sec': elapsed_ns / 1e9,
@@ -144,16 +121,13 @@ def run_benchmark(filepath, algorithm, show_details=False, file_label=""):
             'cpu_pct': (cpu_before + cpu_after) / 2
         })
     
-    # Convert nanoseconds to seconds
     times_sec = [t / 1e9 for t in times_ns]
     
-    # Calculate metrics
     mean_time = mean(times_sec)
     std_time = stdev(times_sec) if len(times_sec) > 1 else 0
     avg_memory = mean(memories)
     avg_cpu = mean(cpu_readings)
     
-    # Throughput: MB/s
     file_size_mb = file_size / (1024 * 1024)
     throughput = file_size_mb / mean_time if mean_time > 0 else 0
     
@@ -167,19 +141,15 @@ def run_benchmark(filepath, algorithm, show_details=False, file_label=""):
     }
 
 
-# === 4. AVALANCHE TEST ===
 def hex_to_bin(hex_str):
-    """Konversi hex ke binary string."""
     return bin(int(hex_str, 16))[2:].zfill(len(hex_str) * 4)
 
 
 def hamming_distance(bin1, bin2):
-    """Hitung jumlah bit berbeda."""
     return sum(b1 != b2 for b1, b2 in zip(bin1, bin2))
 
 
 def avalanche_test(filepath, algorithm):
-    """Uji Avalanche Effect."""
     with open(filepath, 'rb') as f:
         data = f.read()
     
@@ -198,9 +168,7 @@ def avalanche_test(filepath, algorithm):
     return round((diff / total) * 100, 2)
 
 
-# === 5. UTILITY ===
 def get_size_from_filename(filename):
-    """Ekstrak ukuran dari nama file untuk sorting."""
     match = re.search(r'(\d+)(MB|GB)', filename, re.IGNORECASE)
     if match:
         size = int(match.group(1))
@@ -212,7 +180,6 @@ def get_size_from_filename(filename):
 
 
 def format_size(bytes_size):
-    """Format bytes ke human readable."""
     if bytes_size >= 1024**3:
         return f"{bytes_size / (1024**3):.2f} GB"
     elif bytes_size >= 1024**2:
@@ -222,20 +189,14 @@ def format_size(bytes_size):
     return f"{bytes_size} B"
 
 
-# === 6. MAIN ===
 def main():
-    """Jalankan benchmark lengkap."""
-    
-    # ========== HEADER ==========
     print("\n" + "=" * 70)
     print("  BENCHMARK: SHA-256 vs SHA3-256 vs BLAKE2")
     print("  Tugas Akhir Kriptografi Terapan")
     print("=" * 70)
     
-    # ========== TAHAP 1: SYSTEM INFO ==========
     print_and_save_specs()
     
-    # ========== TAHAP 2: CHECK DATASET ==========
     print("\n" + "=" * 70)
     print("  TAHAP 2: PERSIAPAN DATASET")
     print("=" * 70)
@@ -265,13 +226,12 @@ def main():
         print(f"    - {f} ({format_size(fsize)})")
     print("=" * 70)
     
-    # ========== TAHAP 3: BENCHMARK ==========
     print("\n" + "=" * 70)
     print("  TAHAP 3: PROSES BENCHMARK")
     print("=" * 70)
     
     all_results = []
-    all_raw_iterations = []  # Data mentah per iterasi
+    all_raw_iterations = []
     test_number = 0
     total_tests = len(files) * len(ALGORITHMS)
     
@@ -289,10 +249,8 @@ def main():
             print(f"  {'-' * 40}")
             
             try:
-                # Speed benchmark
                 result = run_benchmark(filepath, algo)
                 
-                # Print individual iterations
                 print(f"  {'Iter':<6} {'Time (ms)':<12} {'Memory (MB)':<14} {'CPU (%)':<10}")
                 print(f"  {'-' * 40}")
                 
@@ -302,13 +260,11 @@ def main():
                           f"{iter_data['memory_mb']:<14.4f} "
                           f"{iter_data['cpu_pct']:<10.1f}")
                 
-                # Summary for this test
                 print(f"  {'-' * 40}")
                 print(f"  Mean Time   : {result['mean_time']*1000:.4f} ms")
                 print(f"  Std Dev     : {result['std_time']*1000:.4f} ms")
                 print(f"  Throughput  : {result['throughput']:.2f} MB/s")
                 
-                # Avalanche test
                 avalanche = avalanche_test(filepath, algo)
                 print(f"  Avalanche   : {avalanche}%")
                 
@@ -324,7 +280,6 @@ def main():
                     'Avalanche_Pct': avalanche
                 })
                 
-                # Simpan data per iterasi
                 for iter_data in result['iterations']:
                     all_raw_iterations.append({
                         'Filename': file,
@@ -340,12 +295,10 @@ def main():
             except Exception as e:
                 print(f"  [ERROR] {e}")
     
-    # ========== TAHAP 4: RINGKASAN HASIL ==========
     print("\n" + "=" * 70)
     print("  TAHAP 4: RINGKASAN HASIL")
     print("=" * 70)
     
-    # Group by algorithm
     algo_summary = {}
     for r in all_results:
         algo = r['Algorithm']
@@ -366,12 +319,10 @@ def main():
         avg_avalanche = mean(data['avalanches'])
         print(f"  {algo:<12} {avg_time:<16.4f} {avg_throughput:<18.2f} {avg_avalanche:<14.2f}%")
     
-    # ========== TAHAP 5: EXPORT CSV ==========
     print("\n" + "=" * 70)
     print("  TAHAP 5: EXPORT DATA")
     print("=" * 70)
     
-    # Export summary CSV
     with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as f:
         fieldnames = ['Filename', 'Size_Bytes', 'Algorithm', 'Mean_Time_Sec', 
                       'Stdev_Time', 'Throughput_MBps', 'CPU_Usage_Pct', 
@@ -380,7 +331,6 @@ def main():
         writer.writeheader()
         writer.writerows(all_results)
     
-    # Export raw iteration CSV
     raw_csv = "hasil_benchmark_raw.csv"
     with open(raw_csv, 'w', newline='', encoding='utf-8') as f:
         fieldnames = ['Filename', 'Size_Bytes', 'Algorithm', 'Iteration',
@@ -394,7 +344,6 @@ def main():
     print(f"  [OK] Spesifikasi sistem: {SPECS_FILE}")
     print(f"  [OK] Total pengujian   : {len(all_results)} ({len(all_raw_iterations)} iterasi)")
     
-    # ========== SELESAI ==========
     print("\n" + "=" * 70)
     print("  BENCHMARK SELESAI!")
     print("=" * 70 + "\n")
