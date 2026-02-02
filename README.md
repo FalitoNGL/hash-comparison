@@ -52,7 +52,7 @@ Output: Folder `grafik_output/`
 |-----------|---------|------------|
 | SHA-256 | FIPS 180-4 | Baseline industri |
 | SHA-3 (Keccak) | FIPS 202 | Standar terbaru NIST |
-| BLAKE2b | RFC 7693 | High-speed modern |
+| BLAKE2 | RFC 7693 | High-speed modern |
 
 ---
 **Kelompok 3 - II RKS A**

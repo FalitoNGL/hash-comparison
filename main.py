@@ -3,9 +3,9 @@ import os
 
 # Mapping algoritma ke fungsi hashlib
 ALGORITHMS = {
-    'sha256': hashlib.sha256,
-    'sha3': hashlib.sha3_256,
-    'blake2': hashlib.blake2b
+    'SHA-256': hashlib.sha256,
+    'SHA3-256': hashlib.sha3_256,
+    'BLAKE2': hashlib.blake2b
 }
 
 def compute_hash(filepath, algorithm):

@@ -1,5 +1,5 @@
 """
-Benchmark Final: SHA-256 vs SHA-3 vs BLAKE2
+Benchmark: SHA-256 vs SHA-3 vs BLAKE2
 Scientific Grade - Tugas Akhir Kriptografi Terapan
 """
 
@@ -16,13 +16,12 @@ from statistics import median, mean, stdev
 # External libraries
 import psutil
 from tqdm import tqdm
-from scipy import stats
 
 # === KONFIGURASI ===
 ALGORITHMS = {
     'SHA-256': hashlib.sha256,
     'SHA3-256': hashlib.sha3_256,
-    'BLAKE2b': hashlib.blake2b
+    'BLAKE2': hashlib.blake2b
 }
 
 DATASET_DIR = "dataset"
@@ -134,7 +133,6 @@ def run_benchmark(filepath, algorithm):
     Jalankan benchmark dengan standar scientific:
     - Warm-up: 2 iterasi (dibuang)
     - Iterasi: 30x dengan timing nanoseconds
-    - Return semua waktu untuk analisis statistik
     """
     file_size = os.path.getsize(filepath)
     times_ns = []
@@ -180,7 +178,6 @@ def run_benchmark(filepath, algorithm):
     throughput = file_size_mb / mean_time if mean_time > 0 else 0
     
     return {
-        'times_sec': times_sec,  # Raw data untuk T-Test
         'mean_time': mean_time,
         'std_time': std_time,
         'throughput': throughput,
@@ -227,61 +224,7 @@ def avalanche_test(filepath, algorithm):
     return round((diff / total) * 100, 2)
 
 
-# === 6. T-TEST ANALYSIS ===
-def perform_ttest(data_a, data_b, name_a, name_b):
-    """
-    Lakukan Independent T-Test antara dua dataset.
-    Return: t-statistic, p-value, dan interpretasi.
-    """
-    t_stat, p_value = stats.ttest_ind(data_a, data_b)
-    
-    if p_value < 0.05:
-        interpretation = "SIGNIFIKAN (p < 0.05)"
-    else:
-        interpretation = "TIDAK SIGNIFIKAN (p >= 0.05)"
-    
-    return {
-        'comparison': f"{name_a} vs {name_b}",
-        't_statistic': round(t_stat, 4),
-        'p_value': round(p_value, 6),
-        'interpretation': interpretation
-    }
-
-
-def print_latex_table(results):
-    """Print tabel ringkasan dalam format LaTeX sederhana."""
-    print("\n" + "=" * 65)
-    print("  TABEL LaTeX (Copy untuk Laporan)")
-    print("=" * 65)
-    print(r"\begin{tabular}{|l|c|c|c|c|}")
-    print(r"\hline")
-    print(r"Algorithm & Mean Time (s) & Stdev & Throughput (MB/s) & Avalanche (\%) \\")
-    print(r"\hline")
-    
-    # Group by algorithm
-    algo_data = {}
-    for r in results:
-        algo = r['Algorithm']
-        if algo not in algo_data:
-            algo_data[algo] = {'times': [], 'stdevs': [], 'throughputs': [], 'avalanches': []}
-        algo_data[algo]['times'].append(r['Mean_Time_Sec'])
-        algo_data[algo]['stdevs'].append(r['Stdev_Time'])
-        algo_data[algo]['throughputs'].append(r['Throughput_MBps'])
-        algo_data[algo]['avalanches'].append(r['Avalanche_Pct'])
-    
-    for algo, data in algo_data.items():
-        avg_time = mean(data['times'])
-        avg_stdev = mean(data['stdevs'])
-        avg_throughput = mean(data['throughputs'])
-        avg_avalanche = mean(data['avalanches'])
-        print(f"{algo} & {avg_time:.4f} & {avg_stdev:.6f} & {avg_throughput:.2f} & {avg_avalanche:.2f} \\\\")
-    
-    print(r"\hline")
-    print(r"\end{tabular}")
-    print("=" * 65)
-
-
-# === 7. UTILITY ===
+# === 6. UTILITY ===
 def get_size_from_filename(filename):
     """Ekstrak ukuran dari nama file untuk sorting."""
     match = re.search(r'(\d+)(MB|GB)', filename, re.IGNORECASE)
@@ -294,14 +237,14 @@ def get_size_from_filename(filename):
     return 0
 
 
-# === 8. MAIN ===
+# === 7. MAIN ===
 def main():
     """Jalankan benchmark lengkap."""
     
     # Print header
     print("\n" + "=" * 65)
-    print("  BENCHMARK FINAL: SHA-256 vs SHA3-256 vs BLAKE2b")
-    print("  Scientific Grade - Tugas Akhir Kriptografi Terapan")
+    print("  BENCHMARK: SHA-256 vs SHA3-256 vs BLAKE2b")
+    print("  Tugas Akhir Kriptografi Terapan")
     print("=" * 65)
     
     # System specs
@@ -329,7 +272,6 @@ def main():
     print("\n" + "-" * 65)
     
     all_results = []
-    raw_times = {algo: [] for algo in ALGORITHMS}  # Untuk T-Test
     total_tests = len(files) * len(ALGORITHMS)
     
     # Progress bar
@@ -346,9 +288,6 @@ def main():
                 try:
                     # Speed benchmark
                     result = run_benchmark(filepath, algo)
-                    
-                    # Simpan raw times untuk T-Test
-                    raw_times[algo].extend(result['times_sec'])
                     
                     # Avalanche test
                     avalanche = avalanche_test(filepath, algo)
@@ -384,34 +323,6 @@ def main():
     print(f"\n  [SUCCESS] Hasil disimpan ke '{OUTPUT_CSV}'")
     print(f"  [SUCCESS] Spesifikasi sistem disimpan ke '{SPECS_FILE}'")
     print(f"  [INFO] Total: {len(all_results)} pengujian selesai.")
-    
-    # === T-TEST ANALYSIS ===
-    print("\n" + "=" * 65)
-    print("  ANALISIS STATISTIK (Independent T-Test)")
-    print("=" * 65)
-    
-    # SHA-256 vs BLAKE2b
-    ttest_result = perform_ttest(
-        raw_times['SHA-256'], 
-        raw_times['BLAKE2b'], 
-        'SHA-256', 
-        'BLAKE2b'
-    )
-    
-    print(f"\n  Perbandingan: {ttest_result['comparison']}")
-    print(f"  T-Statistic: {ttest_result['t_statistic']}")
-    print(f"  P-Value: {ttest_result['p_value']}")
-    print(f"  Hasil: {ttest_result['interpretation']}")
-    
-    if ttest_result['p_value'] < 0.05:
-        if mean(raw_times['SHA-256']) < mean(raw_times['BLAKE2b']):
-            print(f"\n  >> SHA-256 secara statistik LEBIH CEPAT dari BLAKE2b")
-        else:
-            print(f"\n  >> BLAKE2b secara statistik LEBIH CEPAT dari SHA-256")
-    
-    # Print LaTeX table
-    print_latex_table(all_results)
-    
     print("\n" + "=" * 65)
     print("  BENCHMARK SELESAI!")
     print("=" * 65 + "\n")
@@ -419,3 +330,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
