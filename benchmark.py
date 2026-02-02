@@ -271,6 +271,7 @@ def main():
     print("=" * 70)
     
     all_results = []
+    all_raw_iterations = []  # Data mentah per iterasi
     test_number = 0
     total_tests = len(files) * len(ALGORITHMS)
     
@@ -323,6 +324,19 @@ def main():
                     'Avalanche_Pct': avalanche
                 })
                 
+                # Simpan data per iterasi
+                for iter_data in result['iterations']:
+                    all_raw_iterations.append({
+                        'Filename': file,
+                        'Size_Bytes': file_size,
+                        'Algorithm': algo,
+                        'Iteration': iter_data['iteration'],
+                        'Time_Sec': round(iter_data['time_sec'], 9),
+                        'Time_Ms': round(iter_data['time_ms'], 4),
+                        'Memory_MB': round(iter_data['memory_mb'], 4),
+                        'CPU_Pct': round(iter_data['cpu_pct'], 1)
+                    })
+                
             except Exception as e:
                 print(f"  [ERROR] {e}")
     
@@ -357,6 +371,7 @@ def main():
     print("  TAHAP 5: EXPORT DATA")
     print("=" * 70)
     
+    # Export summary CSV
     with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as f:
         fieldnames = ['Filename', 'Size_Bytes', 'Algorithm', 'Mean_Time_Sec', 
                       'Stdev_Time', 'Throughput_MBps', 'CPU_Usage_Pct', 
@@ -365,9 +380,19 @@ def main():
         writer.writeheader()
         writer.writerows(all_results)
     
-    print(f"\n  [OK] Hasil benchmark  : {OUTPUT_CSV}")
-    print(f"  [OK] Spesifikasi sistem : {SPECS_FILE}")
-    print(f"  [OK] Total pengujian  : {len(all_results)}")
+    # Export raw iteration CSV
+    raw_csv = "hasil_benchmark_raw.csv"
+    with open(raw_csv, 'w', newline='', encoding='utf-8') as f:
+        fieldnames = ['Filename', 'Size_Bytes', 'Algorithm', 'Iteration',
+                      'Time_Sec', 'Time_Ms', 'Memory_MB', 'CPU_Pct']
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(all_raw_iterations)
+    
+    print(f"\n  [OK] Hasil ringkasan   : {OUTPUT_CSV}")
+    print(f"  [OK] Hasil per iterasi : {raw_csv}")
+    print(f"  [OK] Spesifikasi sistem: {SPECS_FILE}")
+    print(f"  [OK] Total pengujian   : {len(all_results)} ({len(all_raw_iterations)} iterasi)")
     
     # ========== SELESAI ==========
     print("\n" + "=" * 70)
