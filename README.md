@@ -6,7 +6,7 @@
 Proyek akhir mata kuliah **Kriptografi Terapan** (Kelompok 3 - II RKS A).
 Repositori ini berisi *suite* pengujian ilmiah untuk membandingkan performa dan keamanan algoritma hash modern.
 
-## 🎯 Fitur Utama ("God Mode")
+## 🎯 Fitur Utama
 * **Scientific Benchmark:** Mengukur *Throughput* (MB/s) dan *Latency* (ns) dengan presisi tinggi.
 * **Stability Analysis:** Menghitung *Standard Deviation* untuk memvalidasi kestabilan data.
 * **Security Check:** Uji *Avalanche Effect* (Bit Flip Ratio) untuk memastikan kualitas pengacakan.
@@ -14,10 +14,12 @@ Repositori ini berisi *suite* pengujian ilmiah untuk membandingkan performa dan 
 * **Resource Monitoring:** Memantau penggunaan CPU (%) dan Memori (MB) secara real-time.
 
 ## 📂 Struktur Folder
-* `benchmark_final.py`: Engine utama benchmarking.
-* `visualize_final.py`: Generator grafik HD (Bar Chart dengan Error Bars).
+* `main.py`: Demo dasar hashing (SHA-256, SHA-3, BLAKE2).
+* `benchmark.py`: Engine utama benchmarking.
+* `visualize.py`: Generator grafik HD (Bar Chart dengan Error Bars).
 * `generate_dummy.py`: Script pembuat data uji (1MB - 1GB).
 * `dataset/`: Folder penyimpanan file dummy (tidak di-upload ke GitHub).
+* `grafik_output/`: Folder output grafik hasil visualisasi.
 
 ## 🚀 Cara Menjalankan
 1.  **Install Library:**
@@ -30,15 +32,15 @@ Repositori ini berisi *suite* pengujian ilmiah untuk membandingkan performa dan 
     python generate_dummy.py
     ```
 
-3.  **Jalankan Benchmark (Sabar, butuh waktu!):**
+3.  **Jalankan Benchmark:**
     ```bash
-    python benchmark_final.py
+    python benchmark.py
     ```
-    *Output: File `hasil_god_mode.csv` akan muncul.*
+    *Output: File `hasil_god_mode.csv` dan `specs_info.txt` akan muncul.*
 
 4.  **Buat Grafik:**
     ```bash
-    python visualize_final.py
+    python visualize.py
     ```
     *Output: Cek folder `grafik_output/`.*
 
