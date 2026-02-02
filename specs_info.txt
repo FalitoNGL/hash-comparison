@@ -1,0 +1,14 @@
+SPESIFIKASI SISTEM
+==================================================
+OS: Windows 11 (Build 10.0.26200)
+Processor: 12th Gen Intel(R) Core(TM) i5-12450H
+Architecture: AMD64
+Python Version: 3.14.2
+CPU Cores (Physical): 8
+CPU Cores (Logical): 12
+CPU Frequency: 1520 MHz
+RAM Total: 15.70 GB
+RAM Available: 5.60 GB
+RAM Usage: 64.3%
+==================================================
+Timestamp: 2026-02-02 14:49:54

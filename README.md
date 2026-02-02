@@ -7,11 +7,11 @@ Proyek akhir mata kuliah **Kriptografi Terapan** (Kelompok 3 - II RKS A).
 Repositori ini berisi *suite* pengujian ilmiah untuk membandingkan performa dan keamanan algoritma hash modern.
 
 ## 🎯 Fitur Utama
-* **Scientific Benchmark:** Mengukur *Throughput* (MB/s) dan *Latency* (ns) dengan presisi tinggi.
+* **Scientific Benchmark:** Mengukur *Throughput* (MB/s) dengan 30 iterasi per test.
 * **Stability Analysis:** Menghitung *Standard Deviation* untuk memvalidasi kestabilan data.
 * **Security Check:** Uji *Avalanche Effect* (Bit Flip Ratio) untuk memastikan kualitas pengacakan.
-* **Statistical Significance:** Otomatis melakukan *Independent T-Test* (P-Value) untuk validitas perbandingan.
 * **Resource Monitoring:** Memantau penggunaan CPU (%) dan Memori (MB) secara real-time.
+* **Detailed Output:** Menampilkan hasil per iterasi dengan output terpisah per tahap.
 
 ## 📂 Struktur Folder
 | File | Deskripsi |
@@ -27,7 +27,7 @@ Repositori ini berisi *suite* pengujian ilmiah untuk membandingkan performa dan 
 
 ### 1. Install Dependencies
 ```bash
-pip install psutil tqdm scipy matplotlib seaborn pandas
+pip install psutil tqdm matplotlib seaborn pandas
 ```
 
 ### 2. Generate Data Uji
@@ -51,8 +51,16 @@ Output: Folder `grafik_output/`
 | Algoritma | Standar | Keterangan |
 |-----------|---------|------------|
 | SHA-256 | FIPS 180-4 | Baseline industri |
-| SHA-3 (Keccak) | FIPS 202 | Standar terbaru NIST |
+| SHA3-256 | FIPS 202 | Standar terbaru NIST |
 | BLAKE2 | RFC 7693 | High-speed modern |
+
+## 📈 Output Benchmark
+Benchmark menampilkan 5 tahap terpisah:
+1. **Tahap 1:** Informasi Sistem
+2. **Tahap 2:** Persiapan Dataset
+3. **Tahap 3:** Proses Benchmark (30 iterasi per test)
+4. **Tahap 4:** Ringkasan Hasil
+5. **Tahap 5:** Export Data
 
 ---
 **Kelompok 3 - II RKS A**

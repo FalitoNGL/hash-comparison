@@ -18,7 +18,7 @@ DPI = 300
 COLORS = {
     'SHA-256': '#2ecc71',   # Hijau
     'SHA3-256': '#e74c3c',  # Merah
-    'BLAKE2b': '#3498db'    # Biru
+    'BLAKE2': '#3498db'     # Biru
 }
 
 
@@ -82,17 +82,17 @@ def plot_throughput_comparison(df):
     
     ax.set_xlabel('Ukuran File', fontweight='bold')
     ax.set_ylabel('Throughput (MB/s)', fontweight='bold')
-    ax.set_title('Perbandingan Throughput: SHA-256 vs SHA3-256 vs BLAKE2b', 
+    ax.set_title('Perbandingan Throughput: SHA-256 vs SHA3-256 vs BLAKE2', 
                  fontweight='bold', pad=15)
     ax.set_xticks(x)
     ax.set_xticklabels(sizes)
-    ax.legend(loc='upper left')
+    ax.legend(loc='upper right', bbox_to_anchor=(1.15, 1))
     ax.grid(axis='y', alpha=0.3)
     
-    # Add value labels
+    # Add value labels on top of bars
     for container in ax.containers:
         if hasattr(container, 'datavalues'):
-            ax.bar_label(container, fmt='%.0f', padding=3, fontsize=8)
+            ax.bar_label(container, fmt='%.0f', padding=5, fontsize=8)
     
     plt.tight_layout()
     plt.savefig(f"{OUTPUT_DIR}/01_throughput_comparison.png", dpi=DPI, bbox_inches='tight')
