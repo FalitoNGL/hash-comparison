@@ -1,0 +1,82 @@
+% =================================================================
+% BAB 4: HASIL DAN PEMBAHASAN (VERSI FIX & ANALISIS TINGKAT LANJUT)
+% =================================================================
+
+\section{Hasil dan Pembahasan}
+\label{sec:hasil}
+
+Bagian ini memaparkan hasil evaluasi komparatif dari ketiga algoritma hash berdasarkan metrik \textit{throughput}, efisiensi sumber daya, dan kualitas keamanan kriptografis.
+
+\subsection{Rekapitulasi Data Eksperimen}
+Tabel \ref{tab:results} menyajikan ekstraksi data kuantitatif rata-rata khusus pada pengujian skala korpus maksimal (1 GB) guna mengilustrasikan ketahanan performa berkelanjutan pada beban berat. Walaupun data untuk 1 MB, 10 MB, dan 100 MB tidak direpresentasikan secara terpisah dalam tabulasi ini demi redudansi visual, pola kecepatan (SHA-256 > BLAKE2 > SHA-3) terekam beroperasi secara konsisten lintas dimensi korpus tersebut.
+
+\begin{table}[H]
+	\centering
+	\caption{Hasil Eksekusi Referensi Lingkungan Asali (Default)}
+	\label{tab:results}
+	\resizebox{\columnwidth}{!}{%
+	\begin{tabular}{|l|c|r|c|c|}
+		\hline
+		\textbf{Algoritma} & \textbf{Ukuran} & \textbf{Throughput} & \textbf{Efisiensi CPU (s/GB)} & \textbf{Avalanche} \\ \hline
+		SHA-256 & 1 GB & 464,00 MB/s & 1.8 & 50.8\% \\ \hline
+		BLAKE2 & 1 GB & 172,00 MB/s & 4.1 & 48.2\% \\ \hline
+		SHA3-256 & 1 GB & 124,00 MB/s & 5.7 & 52.7\% \\ \hline
+	\end{tabular}%
+	}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\caption{Statistik Deskriptif Kinerja \textit{Throughput} ($\mu \pm \sigma$)}
+	\label{tab:desc_stats}
+	\resizebox{\columnwidth}{!}{%
+	\begin{tabular}{|l|l|r|r|r|}
+		\hline
+		\textbf{Algoritma} & \textbf{Ukuran File} & \textbf{Mean (MB/s)} & \textbf{Std. Dev ($\sigma$)} & \textbf{95\% CI} \\ \hline
+		SHA-256 & 10 MB & 568.0 & 14.2 & [562.7, 573.2] \\ \hline
+		SHA-256 & 1 GB  & 464.0 & 12.8 & [459.1, 468.8] \\ \hline
+		BLAKE2 & 10 MB & 247.0 & 8.5  & [243.8, 250.1] \\ \hline
+		BLAKE2 & 1 GB  & 172.0 & 7.2  & [169.3, 174.6] \\ \hline
+		SHA3-256 & 10 MB & 175.0 & 6.4  & [172.6, 177.3] \\ \hline
+	\end{tabular}%
+	}
+\end{table}
+
+\subsection{Analisis Kinerja Kecepatan (Throughput) dan Pengaruh Mikroarsitektur}
+Pengujian pada lingkungan terkontrol menunjukkan keunggulan \textit{throughput} oleh algoritma SHA-256. Seperti diilustrasikan pada Gambar \ref{fig:throughput}, eksekusi CPython pada dataset 10MB memampukan SHA-256 mencapai rata-rata 568 MB/s. Kecepatan ini 2,3 kali lebih tinggi dari BLAKE2 (247 MB/s) dan 3,2 kali melampaui SHA-3 (175 MB/s). Observasi ini secara spesifik merefleksikan performa pada lingkungan lokal uji yang dipengaruhi oleh lapisan akselerasi instruksi perangkat keras.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{grafik_output/01_throughput_comparison.png}
+	\caption{Perbandingan \textit{Throughput} (MB/s) Eksekusi Asali}
+	\label{fig:throughput}
+\end{figure}
+
+Modul \texttt{hashlib} pada CPython mendelegasikan instruksi kriptografis pada ekstensi \textbf{Intel SHA Extensions (SHA-NI)} melalui rutin binari OpenSSL \textit{backend}. Untuk mengevaluasi signifikansi dukungan ini, pengujian diulang dengan menonaktifkan ekstensi melalui parameter \textit{environment} (\verb|OPENSSL_ia32cap="~0x20000000"|), kendati pemastian \textit{flag} instruksi \textit{assembly} murni pada level registri kompilator tidak dilakukan. Pada skenario isolasi perangkat keras tersebut, laju \textit{throughput} SHA-256 menurun hingga berada di bawah rata-rata konstan BLAKE2. Hasil observasional ini menunjukkan bahwa kinerja tingkat sistem pada lapisan \textit{interpreter} CPython sangat bergantung pada ketersediaan instruksi perangkat keras lokal, sehingga tidak serta-merta mencerminkan kompleksitas asimptotik algoritmanya secara universal.
+
+\subsection{Validasi Signifikansi Statistik (Two-Way Factorial ANOVA)}
+Analisis statistik digunakan untuk mengevaluasi parameter \textit{Interaction Effect} persilangan antara algoritma hash dan ukuran dataset guna mengevaluasi apakah perbedaan metrik \textit{throughput} melampaui variabilitas normal pengukuran.
+
+Terdapat efek interaksi Algoritma $\times$ Ukuran File yang signifikan terhadap \textit{throughput}, $F(6, 348) = 210.45, p < 0,001, \eta_p^2 = 0.88$. Nilai ini mengindikasikan bahwa dalam konteks presisi model pengujian faktorial ini saja, efek gabungan dari faktor algoritma dan ukuran data mampu mendikotomikan 88\% varians pada \textit{throughput} internal. Berdasarkan uji perbandingan ganda Bonferroni (\textit{post-hoc pairwise confidence 95\%}), selisih \textit{throughput} rata-rata antara SHA-256 dan BLAKE2 pada ukuran 1 GB memiliki limit positif sebesar 292 MB/s ($p < 0,001$). Interpretasi atas signifikansi statistika ini secara inheren terbatas pada ruang lingkup arsitektur sistem CPython x86\_64 yang dieksekusi, dan tidak merepresentasikan ekstrapolasi linear penyerapan sumber daya pada arsitektur lain (seperti silikon ARM64) maupun jenis kompilator berbeda (seperti runtime JIT pada PyPy).
+
+\subsection{Analisis Efisiensi: Waktu Utilisasi CPU vs Kecepatan}
+Gambar \ref{fig:efficiency} memetakan pola distribusi \textit{throughput} terhadap rasio durasi waktu CPU (\textit{User Time} + \textit{System Time}). SHA-256 terakselerasi CPU mencatat waktu pemrosesan terendah dengan rata-rata 1,8 \textit{CPU-second} untuk dataset 1 GB. Sebaliknya, komputasi SHA-3 menghabiskan rata-rata 5,7 \textit{CPU-second} per beban korpus 1 GB. Margin efisiensi komputasional ini mendemonstrasikan \textit{overhead processing} numerik yang terkuras pada tingkat penafsir bahasa saat menjauhi akselerasi natif (\textit{system call instruction offloading}).\vspace{-0.1cm}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{grafik_output/02_efficiency_matrix.png}
+	\caption{Matriks Efisiensi: \textit{Throughput} vs Penggunaan CPU}
+	\label{fig:efficiency}
+\end{figure}
+
+\subsection{Evaluasi Properti Difusi (Strict Avalanche Criterion)}
+Pengujian proksi SAC berskala besar ($N=10.000$ entitas biner) memvalidasi struktur \textit{Sponge} dan \textit{Merkle–Damgård} masing-masing algoritma. Model rasio inversi ideal mewajibkan kesesuaian dispersi dengan Distribusi Binomial $B(256, 0.5)$, ditandai oleh rata-rata ideal jarak difusi 128 bit (\textit{variance} $\approx 64$) \cite{webster1986}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{grafik_output/03_avalanche_consistency.png}
+	\caption{Deviasi Distributif \textit{Avalanche} \textit{Hamming Distance} (N=10.000)}
+	\label{fig:avalanche}
+\end{figure}
+
+Secara taksonomi empiris, ketiga algoritma berkinerja dalam rentang kriteria Binomial. SHA-3 menampilkan distribusi aktual rataan diskrit 128,02 (Varians = 64,15), sementara SHA-256 dan BLAKE2 masing-masing merekam rataan 128,00 dan 127,98. Hasil \textit{Chi-Square Goodness-of-Fit} menunjukkan tidak terdapat perbedaan signifikan antara sebaran SHA-3 melawan model teoretikal ($\chi^2(25) = 28.4, p = 0.28$; temuan homogen pada algoritma lainnya, $p>0.10$). Evaluasi makroskopik ini menunjukkan bahwa properti difusi (SAC) berfungsi secara integratif tanpa anomali struktural melintasi lapisan \textit{interpreter} CPython.

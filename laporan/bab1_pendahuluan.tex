@@ -1,0 +1,39 @@
+% =================================================================
+% BAB 1: PENDAHULUAN (VERSI FIX & EXTENDED)
+% =================================================================
+
+\section{Pendahuluan}
+\label{sec:pendahuluan}
+
+\subsection{Latar Belakang}
+Fungsi hash kriptografis merupakan komponen esensial dalam arsitektur keamanan informasi. Aplikasinya mencakup validasi integritas paket data jaringan, penyimpanan informasi kredensial, tanda tangan digital, hingga mekanisme konsensus pada teknologi \textit{blockchain} \cite{slatina2019}. Keandalan fungsi hash dalam menjamin integritas dan otentisitas data menjadi syarat teknis utama dalam rekayasa keamanan siber.
+
+Transisi standar kriptografi terjadi pasca-penemuan kerentanan kolisi pada algoritma MD5 dan SHA-1. Kondisi tersebut memicu adopsi keluarga algoritma SHA-2, khususnya SHA-256, yang distandardisasi oleh \textit{National Institute of Standards and Technology} (NIST) melalui FIPS 180-4 \cite{nist2015}. Sebagai antisipasi terhadap analisis kriptografi masa depan, NIST menyelenggarakan kompetisi untuk standar fungsi hash baru yang dimenangkan oleh algoritma Keccak, yang kemudian ditetapkan sebagai SHA-3 melalui FIPS 202 \cite{nist2015}.
+
+Namun, transisi menuju SHA-3 menimbulkan latensi kinerja. Struktur \textit{Sponge} pada SHA-3 sering membutuhkan alokasi sumber daya yang lebih besar saat dieksekusi secara perangkat lunak dibandingkan pendahulunya. Merespons kendala performa tersebut, algoritma BLAKE2 dirancang untuk mengoptimalkan \textit{throughput} pada arsitektur CPU 64-bit modern, dengan menjaga margin keamanan komputasional yang diklaim setara dengan SHA-3 \cite{aumasson2013}.
+
+Ketersediaan opsi ini memaksa penyesuaian teknis untuk menyeimbangkan kebutuhan tingkat keamanan tinggi (SHA-3) dan kecepatan pemrosesan volume data besar (BLAKE2). Selain itu, metrik kinerja algoritma sering mengalami deviasi ketika diimplementasikan pada bahasa tingkat tinggi seperti Python, yang kinerjanya bergantung pada \textit{backend} dan set instruksi perangkat keras. Oleh karena itu, penelitian ini bertujuan mengevaluasi empiris kinerja dan difusi keamanan ketiga algoritma tersebut pada arsitektur komputasi modern.
+
+\subsection{Rumusan Masalah}
+Berdasarkan latar belakang yang telah dipaparkan, penelitian ini diformulasikan untuk menjawab permasalahan teknis berikut:
+\begin{enumerate}
+	\item Sejauh mana implementasi algoritma SHA-256, SHA-3, dan BLAKE2 pada bahasa pemrograman Python memengaruhi \textit{throughput} pemrosesan data dan efisiensi konsumsi siklus CPU?
+	\item Apakah keberadaan akselerasi perangkat keras (\textit{hardware acceleration}) pada prosesor generasi modern mendistorsi klaim kecepatan teoretis dari algoritma-algoritma tersebut?
+	\item Bagaimana konsistensi ketiga algoritma tersebut dalam mempertahankan properti difusi (\textit{diffusion}) sesuai dengan standar \textit{Strict Avalanche Criterion} (SAC) pada berbagai variasi ukuran data masukan?
+\end{enumerate}
+
+\subsection{Batasan Masalah}
+Untuk menjamin validitas ilmiah dan meminimalisir variabel pengganggu, ruang lingkup penelitian ini dibatasi pada:
+\begin{enumerate}
+	\item \textbf{Implementasi Perangkat Lunak:} Pengujian dilakukan murni menggunakan pustaka bawaan \texttt{hashlib} pada \textit{interpreter} Python versi 3.14.2 tanpa melibatkan optimasi kode \textit{native} manual (C/Rust) secara eksternal.
+	\item \textbf{Lingkungan Perangkat Keras:} Eksperimen dijalankan pada Sistem Operasi Windows 11 dengan arsitektur x86\_64 menggunakan prosesor 12th Gen Intel Core i5-12450H dan memori utama 16 GB.
+	\item \textbf{Metrik Evaluasi:} Fokus pengukuran mencakup tiga parameter utama, yaitu \textit{Throughput} (Kecepatan dalam MB/s), Konsumsi CPU (\textit{Efficiency} dalam persentase), dan \textit{Avalanche Effect} (Keamanan difusi dalam persentase).
+\end{enumerate}
+
+\subsection{Kontribusi Penelitian}
+Studi ini memposisikan pemahaman kajian sebagai evaluasi kinerja tingkat sistem (\textit{systems-level performance evaluation}) dalam lingkungan \textit{runtime} terinterpretasi (Python 3.x). Objektif utama berfokus pada analisis interaksi abstraksi lapisan \textit{backend} C (OpenSSL) dengan instruksi perangkat keras (\textit{Intel SHA-NI}) terhadap \textit{throughput} operasional algoritma (SHA-256 vs SHA-3 vs BLAKE2). Temuan ini dijabarkan ke dalam tiga ranah:
+\begin{enumerate}
+	\item \textbf{Kontribusi Empiris:} Menyediakan perbandingan observasional waktu eksekusi fungsi hash menggunakan skenario kontrol isolasi perangkat keras (\textit{hardware isolation control}).
+	\item \textbf{Kontribusi Praktis:} Menguraikan metrik pemanfaatan CPU (\textit{overhead CPU utilization}) untuk validasi teknis \textit{trade-off} perangkat lunak antara kinerja pemrosesan data dan retensi properti SAC.
+	\item \textbf{Kontribusi Metodologis:} Menggunakan kerangka \textit{Two-Way Factorial ANOVA} dan evaluasi Distribusi Binomial (\textit{Chi-Square}) berskala eksperimen N=10.000 untuk analisis dependensi arsitektural fungsi dispersi.
+\end{enumerate}

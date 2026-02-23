@@ -1,0 +1,14 @@
+\section{Tinjauan Pustaka}
+\label{sec:teori}
+
+\subsection{Arsitektur Algoritma Hash}
+\subsubsection{SHA-3 (Keccak)}
+Tidak seperti SHA-2 yang menggunakan struktur \textit{Merkle-Damg\r{a}rd}, SHA-3 menggunakan konstruksi \textit{Sponge} \cite{bertoni2011}. Struktur ini tahan terhadap serangan \textit{length-extension} namun seringkali memiliki konsekuensi beban komputasi yang lebih berat di perangkat lunak.
+
+\subsubsection{BLAKE2}
+Menurut publikasi resminya di konferensi internasional ACNS \cite{aumasson2013}, BLAKE2 dioptimalkan untuk performa \textit{software} 64-bit, menggunakan vektor instruksi modern untuk mencapai \textit{throughput} tinggi tanpa mengorbankan keamanan.
+
+\subsection{Standar Pengujian Kinerja dan Keamanan}
+Kualitas pengacakan hash diukur menggunakan standar \textit{Strict Avalanche Criterion} (SAC) yang diperkenalkan oleh Webster dan Tavares \cite{webster1986}. SAC mensyaratkan perubahan satu bit pada input harus mengubah probabilitas 50\% bit pada output. 
+
+Untuk menghindari anomali \textit{noise} sistem operasi, penelitian ini mengadopsi standar evaluasi performa dari Raj Jain \cite{jain1991} dan Georges et al. \cite{georges2007}, yaitu menggunakan \textit{iterative execution} (N=30) dan \textit{warm-up periods} untuk memastikan validitas statistik.

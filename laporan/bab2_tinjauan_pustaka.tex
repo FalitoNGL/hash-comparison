@@ -1,0 +1,45 @@
+% =================================================================
+% BAB 2: TINJAUAN PUSTAKA (VERSI FIX & ANALISIS MENDALAM)
+% =================================================================
+
+\section{Tinjauan Pustaka}
+\label{sec:teori}
+
+\subsection{Analisis Kompleksitas Komputasi dan Arsitektur}
+Secara teoretis, efisiensi fungsi hash dapat dievaluasi melalui kompleksitas waktu asimptotik yang umumnya berada pada skala $O(n)$, di mana $n$ merupakan panjang pesan masukan. Namun, arsitektur internal dari setiap algoritma memberikan beban komputasi per-bit yang berbeda secara fundamental.
+
+\subsubsection{Keluarga SHA-2 (SHA-256)}
+SHA-256 beroperasi menggunakan konstruksi klasik \textit{Merkle-Damgård}. Algoritma ini memproses blok data 512-bit melalui fungsi kompresi searah dengan ukuran \textit{state} internal tetap sebesar 256-bit \cite{nist2015}. Desain arsitekturnya difokuskan pada pemrosesan sekuensial yang secara bawaan sangat kompatibel dengan abstraksi set instruksi kalkulasi linier prosesor.
+
+\subsubsection{Keluarga SHA-3 (Keccak)}
+SHA-3 memperkenalkan abstraksi arsitektur menggunakan konstruksi \textit{Sponge} (Spons) yang memisahkan fase penyerapan (\textit{absorbing}) dan pemerasan (\textit{squeezing}) \cite{bertoni2011}. Ukuran \textit{state} internal permutasi yang masif pada mekanisme \textit{Sponge} ini menuntut siklus pengacakan repetitif. Meskipun menawarkan resistensi algoritma yang kuat terhadap pembongkaran teoretis, kompleksitas intrinsiknya berpotensi memberikan \textit{overhead} komputasi parsial yang menekan raihan laju \textit{throughput} di perangkat nonsilikon fungsional \cite{nist2015}.
+
+\subsubsection{Keluarga BLAKE2}
+BLAKE2 dikembangkan berbasis algoritma \textit{stream cipher} ChaCha dan dioptimalkan secara spesifik untuk arsitektur CPU 64-bit modern \cite{aumasson2013}. Dengan memanfaatkan instruksi SIMD (\textit{Single Instruction, Multiple Data}) seperti SSE dan AVX, BLAKE2 mampu memproses beberapa data secara paralel. Arsitektur dasarnya menggunakan skema ARX (\textit{Addition-Rotation-XOR}) yang tidak menggunakan \textit{look-up table}, sehingga sangat kebal terhadap serangan \textit{cache-timing} dan sangat efisien terhadap siklus CPU.
+
+\subsection{Teori Akselerasi Perangkat Keras (Hardware Acceleration)}
+Performa kriptografi pada perangkat modern tidak hanya ditentukan oleh efisiensi algoritma (Big-O Notation), tetapi juga sangat dipengaruhi oleh Set Instruksi Perangkat Keras (ISA). Intel dan AMD memperkenalkan \textit{Intel SHA Extensions} (SHA-NI), yaitu set instruksi mikrokode yang memungkinkan kalkulasi SHA-256 dilakukan langsung pada level silikon. Hal ini menciptakan asimetri performa yang signifikan dibandingkan algoritma yang dieksekusi murni melalui operasi \textit{Arithmetic Logic Unit} (ALU) biasa.
+
+\subsection{Kualitas Difusi: Strict Avalanche Criterion (SAC)}
+Kualitas pengacakan bit pada fungsi hash diukur melalui \textit{Strict Avalanche Criterion} (SAC) yang diformalkan oleh Webster dan Tavares \cite{webster1986}. Standar ini mensyaratkan bahwa setiap inversi satu bit pada input harus menghasilkan perubahan rata-rata sebesar 50\% pada seluruh bit output (\textit{digest}). Deviasi yang menjauhi angka 50\% mengindikasikan adanya korelasi statistik yang lemah yang dapat dieksploitasi oleh kriptanalisis diferensial.
+
+\subsection{Validitas Statistik dalam Evaluasi Kinerja}
+Pengukuran pada sistem operasi \textit{multitasking} memiliki bias yang sangat tinggi akibat \textit{context switching}. Penelitian ini mengadopsi metodologi \textit{Law of Large Numbers} dari Raj Jain guna menjamin stabilitas data \cite{jain1991}. Validasi signifikansi hasil eksperimen diperkuat dengan standar evaluasi statistik ketat dari Georges et al., untuk memastikan bahwa selisih performa antar algoritma bukanlah sebuah anomali sesaat \cite{georges2007}.
+
+\subsection{Sintesis Penelitian Terdahulu (Related Works)}
+Untuk memetakan posisi penelitian ini dalam spektrum literatur global dan menunjukkan kebaruan (\textit{novelty}), berikut adalah ringkasan perbandingan dengan studi-studi utama yang relevan:
+
+\begin{table}[H]
+	\centering
+	\caption{Perbandingan Metodologi dan Fokus Penelitian Terdahulu}
+	\label{tab:related_works}
+	\resizebox{\columnwidth}{!}{%
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		\textbf{Peneliti} & \textbf{Algoritma} & \textbf{Platform} & \textbf{Fokus Utama} & \textbf{Temuan Utama} \\ \hline
+		Slatina (2019) \cite{slatina2019} & SHA-256, SHA-3, BLAKE2 & Blockchain Nodes & Konsumsi Energi & BLAKE2 unggul pada IoT. \\ \hline
+		Aumasson (2013) \cite{aumasson2013} & BLAKE2 & C / Native Code & Kecepatan Raw & BLAKE2 mengalahkan MD5. \\ \hline
+		\textbf{Kelompok 3 (2026)} & \textbf{SHA-256, SHA-3, BLAKE2} & \textbf{Python / Win 11} & \textbf{Akselerasi Hardware} & \textbf{SHA-256 unggul via SHA-NI.} \\ \hline
+	\end{tabular}%
+	}
+\end{table}
