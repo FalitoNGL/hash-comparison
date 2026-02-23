@@ -1,0 +1,98 @@
+\documentclass[report, a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[indonesian]{babel}
+\usepackage{geometry}
+\geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small Logbook \& Kontribusi}
+\lhead{\small Kelompok 3 - Kriptografi Terapan}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    {\large \textbf{LAPORAN LOGBOOK DAN KONTRIBUSI PROYEK AKHIR}}\\[0.5cm]
+    {\large \textbf{KRIPTOGRAFI TERAPAN}}\\[1.5cm]
+    
+    \includegraphics[width=0.4\textwidth]{grafik_output/flowchart.png}\\[1.5cm] % Menggunakan flowchart sebagai ilustrasi sementara
+    
+    \textbf{Judul Proyek:}\\
+    Analisis Komparatif Performa dan Keamanan Algoritma Hash SHA-256, SHA-3, dan BLAKE2 pada Lingkungan Python\\[1.5cm]
+    
+    \textbf{Disusun Oleh (Kelompok 3):}\\[0.5cm]
+    \begin{tabular}{ll}
+        Falito Eriano Nainggolan & (Ketua Kelompok) \\
+        Hinggil Parahita & (Anggota) \\
+        Raffelino Hizkia Marbun & (Anggota) \\
+        Yosapat Nainggolan & (Anggota) \\
+    \end{tabular}\\[2cm]
+    
+    \textbf{Tingkat II Rekayasa Keamanan Siber A}\\
+    \textbf{Politeknik Siber dan Sandi Negara}\\
+    \textbf{Februari 2026}
+\end{titlepage}
+
+\section{Pendahuluan}
+Laporan ini berisi dokumentasi aktivitas harian (logbook) dan rincian kontribusi masing-masing anggota kelompok dalam pengerjaan proyek akhir mata kuliah Kriptografi Terapan. Proyek ini berfokus pada evaluasi kinerja dan difusi keamanan fungsi hash SHA-256, SHA-3, dan BLAKE2.
+
+\section{Logbook Aktivitas}
+Berikut adalah rincian aktivitas yang dilakukan selama durasi proyek:
+
+\begin{longtable}{|p{2.5cm}|p{9cm}|p{3cm}|}
+    \hline
+    \textbf{Tanggal} & \textbf{Deskripsi Aktivitas} & \textbf{Status} \\ \hline
+    \endfirsthead
+    \hline
+    \textbf{Tanggal} & \textbf{Deskripsi Aktivitas} & \textbf{Status} \\ \hline
+    \endhead
+    27 Jan 2026 & Inisialisasi ide proyek dan pemilihan algoritma (SHA-256, SHA-3, BLAKE2). & Selesai \\ \hline
+    28 Jan 2026 & Pembuatan skrip benchmarking dasar menggunakan Python \texttt{hashlib}. & Selesai \\ \hline
+    01 Feb 2026 & Eksekusi benchmark awal dan pengumpulan data mentah (\textit{Raw Data}). & Selesai \\ \hline
+    03 Feb 2026 & Analisis statistik menggunakan ANOVA dan optimasi grafik visualisasi. & Selesai \\ \hline
+    10 Feb 2026 & Penyusunan draf awal laporan (Bab 1 - Bab 3). & Selesai \\ \hline
+    15 Feb 2026 & Penulisan Bab 4 (Hasil dan Pembahasan) serta Bab 5 (Kesimpulan). & Selesai \\ \hline
+    18 Feb 2026 & Audit teknis pertama: Perbaikan sitasi dan standarisasi hardware acceleration notation. & Selesai \\ \hline
+    22 Feb 2026 & Audit teknis kedua: Sinkronisasi terminologi SHA-NI dan efisiensi CPU. & Selesai \\ \hline
+    23 Feb 2026 & \textit{Quality Assurance} akhir: Penyesuaian desimal koma, terminologi SHA-3, dan pembersihan kode. & Selesai \\ \hline
+\end{longtable}
+
+\newpage
+\section{Matriks Kontribusi Anggota}
+Berikut adalah pembagian tugas dan kontribusi spesifik setiap anggota kelompok:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{@{}lp{10cm}@{}}
+        \toprule
+        \textbf{Nama Anggota} & \textbf{Kontribusi Utama} \\ \midrule
+        Falito Eriano N. & Manajemen proyek, integrasi naskah akhir, perancangan skenario benchmark, dan analisis statistik ANOVA. \\ \midrule
+        Hinggil Parahita & Pengembangan skrip visualisasi data (\textit{matplotlib/seaborn}), pengujian SAC (Avalanche effect), dan penulisan Bab 4. \\ \midrule
+        Raffelino Hizkia M. & Studi literatur (\textit{Related Works}), pengelolaan referensi (BibTeX), dan penulisan Bab 1 \& 2. \\ \midrule
+        Yosapat Nainggolan & Persiapan dataset (1 MB - 1 GB), analisis konsumsi sumber daya CPU (\textit{psutil}), dan penulisan Bab 3 \& 5. \\ \bottomrule
+    \end{tabular}
+    \caption{Matriks Peran dan Tanggung Jawab Anggota Kelompok}
+\end{table}
+
+\section{Penutup}
+Seluruh anggota kelompok telah memberikan kontribusi maksimal sesuai dengan perannya masing-masing. Proyek ini berhasil diselesaikan tepat waktu dengan standar akademik yang diharapkan.
+
+\vspace{2cm}
+\begin{flushright}
+    Bogor, 23 Februari 2026\\[1.5cm]
+    \textbf{Falito Eriano Nainggolan}\\
+    (Ketua Kelompok)
+\end{flushright}
+
+\end{document}
