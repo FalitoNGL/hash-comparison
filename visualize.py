@@ -174,9 +174,7 @@ def plot_avalanche_consistency(df):
 
 
 def main():
-    print("\n" + "=" * 50)
-    print("  VISUALIZE - Grafik HD untuk Jurnal")
-    print("=" * 50)
+    print("\n=== VISUALIZE: Grafik Output ===")
     
     if not os.path.exists(INPUT_CSV):
         print(f"\n[ERROR] File '{INPUT_CSV}' tidak ditemukan.")
@@ -197,10 +195,7 @@ def main():
     plot_efficiency_matrix(df)
     plot_avalanche_consistency(df)
     
-    print("\n" + "-" * 50)
-    print(f"  [SUCCESS] Semua grafik tersimpan di folder '{OUTPUT_DIR}/'")
-    print(f"  [INFO] Format: PNG, DPI: {DPI}")
-    print("=" * 50 + "\n")
+    print(f"\n  [SUCCESS] Grafik tersimpan di '{OUTPUT_DIR}/'")
 
 
 if __name__ == "__main__":

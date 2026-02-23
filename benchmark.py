@@ -55,12 +55,12 @@ def get_system_info():
 def print_and_save_specs():
     info = get_system_info()
     
-    print("\n" + "=" * 70)
-    print("  TAHAP 1: INFORMASI SISTEM")
-    print("=" * 70)
+def print_and_save_specs():
+    info = get_system_info()
+    
+    print("\n--- TAHAP 1: INFORMASI SISTEM ---")
     for key, value in info.items():
         print(f"  {key}: {value}")
-    print("=" * 70)
     
     with open(SPECS_FILE, 'w', encoding='utf-8') as f:
         f.write("SPESIFIKASI SISTEM\n")
@@ -190,16 +190,11 @@ def format_size(bytes_size):
 
 
 def main():
-    print("\n" + "=" * 70)
-    print("  BENCHMARK: SHA-256 vs SHA3-256 vs BLAKE2")
-    print("  Tugas Akhir Kriptografi Terapan")
-    print("=" * 70)
+    print("\n=== BENCHMARK: SHA-256 vs SHA-3 vs BLAKE2 ===")
     
     print_and_save_specs()
     
-    print("\n" + "=" * 70)
-    print("  TAHAP 2: PERSIAPAN DATASET")
-    print("=" * 70)
+    print("\n--- TAHAP 2: PERSIAPAN DATASET ---")
     
     if not os.path.exists(DATASET_DIR):
         os.makedirs(DATASET_DIR)
@@ -224,11 +219,8 @@ def main():
         fpath = os.path.join(DATASET_DIR, f)
         fsize = os.path.getsize(fpath)
         print(f"    - {f} ({format_size(fsize)})")
-    print("=" * 70)
     
-    print("\n" + "=" * 70)
-    print("  TAHAP 3: PROSES BENCHMARK")
-    print("=" * 70)
+    print("\n--- TAHAP 3: PROSES BENCHMARK ---")
     
     all_results = []
     all_raw_iterations = []
@@ -239,9 +231,7 @@ def main():
         filepath = os.path.join(DATASET_DIR, file)
         file_size = os.path.getsize(filepath)
         
-        print(f"\n  {'─' * 66}")
-        print(f"  FILE: {file} ({format_size(file_size)})")
-        print(f"  {'─' * 66}")
+        print(f"\n[ FILE: {file} ({format_size(file_size)}) ]")
         
         for algo in ALGORITHMS:
             test_number += 1
@@ -295,9 +285,7 @@ def main():
             except Exception as e:
                 print(f"  [ERROR] {e}")
     
-    print("\n" + "=" * 70)
-    print("  TAHAP 4: RINGKASAN HASIL")
-    print("=" * 70)
+    print("\n--- TAHAP 4: RINGKASAN HASIL ---")
     
     algo_summary = {}
     for r in all_results:
@@ -319,9 +307,7 @@ def main():
         avg_avalanche = mean(data['avalanches'])
         print(f"  {algo:<12} {avg_time:<16.4f} {avg_throughput:<18.2f} {avg_avalanche:<14.2f}%")
     
-    print("\n" + "=" * 70)
-    print("  TAHAP 5: EXPORT DATA")
-    print("=" * 70)
+    print("\n--- TAHAP 5: EXPORT DATA ---")
     
     with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as f:
         fieldnames = ['Filename', 'Size_Bytes', 'Algorithm', 'Mean_Time_Sec', 
@@ -344,9 +330,7 @@ def main():
     print(f"  [OK] Spesifikasi sistem: {SPECS_FILE}")
     print(f"  [OK] Total pengujian   : {len(all_results)} ({len(all_raw_iterations)} iterasi)")
     
-    print("\n" + "=" * 70)
-    print("  BENCHMARK SELESAI!")
-    print("=" * 70 + "\n")
+    print("\n=== BENCHMARK SELESAI ===\n")
 
 
 if __name__ == "__main__":
