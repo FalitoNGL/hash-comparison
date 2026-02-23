@@ -58,11 +58,12 @@ def plot_throughput_comparison(df):
     for i, algo in enumerate(algorithms):
         algo_data = df[df['Algorithm'] == algo].sort_values('Size_Bytes')
         throughputs = algo_data['Throughput_MBps'].values
-        stdevs = algo_data['Stdev_Time'].values * 100
+        # Kalkulasi Stdev Throughput secara proporsional dari Stdev Time (Teorema Delta)
+        stdevs = throughputs * (algo_data['Stdev_Time'].values / algo_data['Mean_Time_Sec'].values)
         
         bars = ax.bar(x + (i - 1) * width, throughputs, width, 
                       label=algo, color=COLORS.get(algo, '#888888'),
-                      yerr=stdevs, capsize=3, error_kw={'linewidth': 1})
+                      yerr=stdevs, capsize=4, error_kw={'linewidth': 1.5})
     
     ax.set_xlabel('Ukuran File', fontweight='bold')
     ax.set_ylabel('Throughput (MB/s)', fontweight='bold')
